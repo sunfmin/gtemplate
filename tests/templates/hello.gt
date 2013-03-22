@@ -1,0 +1,48 @@
+package templates
+
+import (
+	"fmt"
+	"io"
+)
+
+type HelloData struct {
+	Name string
+	Email string
+	Lang string
+	Entries []*Entry
+}
+
+type Entry struct {
+	Type string
+	Title string
+}
+
+{{func Hello(d *HelloData)}}
+<h1>{{fmt.Sprintf("Hi, %s", d.Name)}} {{d.MyEmail()}}</h1>
+<ul>
+{{ for _, e := range d.Entries }}
+	<li>{{EntryItem(e, d.Lang)}}</li>
+{{ end }}
+</ul>
+{{end}}
+
+{{func EntryItem(e *Entry, lang string)}}
+	{{switch e.Type }}
+	{{case "post"}}
+<div class="post">{{e.Title}}</div>
+	{{case "comment"}}
+<div class="comment">{{e.Title}}</div>
+	{{default}}
+<div class="entry">{{e.Title}}</div>
+	{{end}}
+	{{if lang == "english"}}
+Written in English
+	{{else}}
+Unknown Language
+	{{end}}
+{{end}}
+
+{{func (h *HelloData) MyEmail()}}
+<em>My Email is: {{h.Email}}</em>
+{{end}}
+
